@@ -1,13 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:page_view/data.dart';
+import 'package:provider/provider.dart';
 
+
+import 'mySliverAppbar.dart';
+import 'setStateExample.dart';
+import 'myProvider.dart';
 import 'Page1.dart';
 import 'Page2.dart';
 import 'Page3.dart';
 
 
+
 void main() {
-  runApp(MyApp());
+  runApp(
+      MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_)=>Data()),
+          ],
+          child: MyApp())
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -36,9 +49,7 @@ class _MyAppState extends State<MyApp> {
           scrollDirection: Axis.vertical,
           controller: pageController,
           children: <Widget>[
-            Page1(),
-            Page2(),
-            Page3(),
+            myProvider()
           ],
         )
         ,
