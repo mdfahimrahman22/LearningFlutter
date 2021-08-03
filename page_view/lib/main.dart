@@ -1,26 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:page_view/data.dart';
+import 'package:page_view/myAlertDialog.dart';
 import 'package:provider/provider.dart';
-
 
 import 'mySliverAppbar.dart';
 import 'setStateExample.dart';
 import 'myProvider.dart';
 import 'Page1.dart';
 import 'Page2.dart';
-import 'Page3.dart';
-
-
+import 'bottomSheet.dart';
 
 void main() {
-  runApp(
-      MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_)=>Data()),
-          ],
-          child: MyApp())
-  );
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => Data()),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -31,8 +25,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   PageController pageController = PageController(initialPage: 0);
+
   @override
   void dispose() {
     pageController.dispose();
@@ -41,7 +35,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -49,13 +42,9 @@ class _MyAppState extends State<MyApp> {
           scrollDirection: Axis.vertical,
           controller: pageController,
           children: <Widget>[
-            myProvider()
-          ],
-        )
-        ,
-      )
-      ,
+            MyAlertDialog()],
+        ),
+      ),
     );
   }
 }
-
