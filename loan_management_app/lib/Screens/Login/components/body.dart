@@ -3,8 +3,6 @@ import 'package:loan_management_app/Screens/Login/components/login_form.dart';
 import 'package:loan_management_app/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loan_management_app/components/header_welcome.dart';
-import 'package:loan_management_app/components/text_field.dart';
-import 'package:loan_management_app/components/password_field.dart';
 import 'package:loan_management_app/components/common_components.dart';
 
 class Body extends StatefulWidget {

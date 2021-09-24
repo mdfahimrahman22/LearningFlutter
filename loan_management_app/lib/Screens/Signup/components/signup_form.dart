@@ -13,10 +13,12 @@ class SignupForm extends StatefulWidget {
 }
 
 class _SignupFormState extends State<SignupForm> {
-  final AuthService _auth = AuthService();
+  // final AuthService _auth = AuthService();
   bool passVisible = false;
   bool confirmPassVisible = false;
   bool agreementConfirmed = true;
+  bool error = false;
+  String errorMsg = '';
   String name = '';
   String email = '';
   String phone = '';
@@ -195,9 +197,9 @@ class _SignupFormState extends State<SignupForm> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Visibility(
-                visible: !agreementConfirmed,
+                visible: error,
                 child: Text(
-                  "You have to agree with our Privacy Policy and T&C",
+                  errorMsg,
                   style: GoogleFonts.koHo(
                       textStyle:
                           const TextStyle(fontSize: 18, color: Colors.red)),
@@ -208,10 +210,18 @@ class _SignupFormState extends State<SignupForm> {
             RoundedButton(
               text: "Sign Up",
               press: () async {
-                if (_formKey.currentState!.validate() && agreementConfirmed) {
-                  dynamic result =
-                      _auth.registerWithEmailAndPassword(email, pass);
+                if (!agreementConfirmed) {
+                  setState(() {
+                    error = true;
+                    errorMsg =
+                        "You have to agree with our Privacy Policy and T&C";
+                  });
+                  return;
                 }
+                // if (_formKey.currentState!.validate()) {
+                //   dynamic result =
+                //       _auth.registerWithEmailAndPassword(email, pass);
+                // }
               },
             ),
           ],

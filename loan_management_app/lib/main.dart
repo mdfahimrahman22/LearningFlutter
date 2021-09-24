@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:loan_management_app/Screens/Login/login_screen.dart';
 import 'package:loan_management_app/Screens/Signup/signup_screen.dart';
@@ -5,7 +6,8 @@ import 'Screens/Welcome/welcome_screen.dart';
 import 'constants.dart';
 import 'package:loan_management_app/Screens/Home/home_screen.dart';
 
-void main() {
+Future<void> main() async {
+  await Firebase.initializeApp();
   runApp(const MainApp());
 }
 
@@ -21,7 +23,7 @@ class MainApp extends StatelessWidget {
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: const LoginScreen(),
+      home: const WelcomeScreen(),
     );
   }
 }
