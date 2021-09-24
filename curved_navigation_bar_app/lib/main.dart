@@ -49,7 +49,6 @@ class _MyNavigatorAppState extends State<MyNavigatorApp> {
           onTap: (index) {
             setState(() {
               pageIndex = index;
-
             });
           },
         ),

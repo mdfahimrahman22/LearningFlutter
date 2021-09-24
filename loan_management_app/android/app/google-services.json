@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "764364361586",
+    "firebase_url": "https://iloan-79961-default-rtdb.firebaseio.com",
+    "project_id": "iloan-79961",
+    "storage_bucket": "iloan-79961.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764364361586:android:7270997ca70c4996abd7eb",
+        "android_client_info": {
+          "package_name": "com.example.loan_management_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "764364361586-hmdomb9cqtl2lsbfjrsmp2qiqrlagq5e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAy7T6rfiW6shB2DDD4Or2HiLFxw853SnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "764364361586-hmdomb9cqtl2lsbfjrsmp2qiqrlagq5e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
