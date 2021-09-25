@@ -10,9 +10,26 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      color: Colors.blueAccent,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Container(
+            height: 300,
+            color: Colors.amber,
+          )
+        ],
+      ),
     );
   }
 }
+
+// Widget header() {
+//   return Stack(
+//     children: [
+//       Container(
+//         color: Colors.red,
+//         height: 500,
+//       )
+//     ],
+//   );
+// }

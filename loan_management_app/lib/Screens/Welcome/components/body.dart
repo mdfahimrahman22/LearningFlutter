@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loan_management_app/components/common_components.dart';
 import 'package:loan_management_app/Screens/Login/login_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Body extends StatelessWidget {
   const Body({Key? key}) : super(key: key);
@@ -27,21 +28,30 @@ class Body extends StatelessWidget {
           const SizedBox(height: 30),
           description(),
           const SizedBox(height: 40),
+          // StreamBuilder(
+          //   stream: FirebaseFirestore.instance
+          //       .collection('users/3kLuiC5alo3BARX2P7vJ')
+          //       .snapshots(),
+          //   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          //     return ListView(
+          //       children: snapshot.data!.docs.map((user) {
+          //         return Center(
+          //           child: ListTile(
+          //             title: Text(user['name']),
+          //           ),
+          //         );
+          //       }).toList(),
+          //     );
+          //   },
+          // ),
           Hero(
             tag: 'button',
             child: RoundedButton(
-              text: "Sign In",
-              press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginScreen();
-                    },
-                  ),
-                );
-              }
-            ),
+                text: "Sign In",
+                press: () {
+                  navigateToLogin(context);
+                  var firestoreInstance = FirebaseFirestore.instance;
+                }),
           ),
           const SizedBox(height: 30),
           signUpRoute(context),

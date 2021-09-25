@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loan_management_app/constants.dart';
 import 'package:loan_management_app/Screens/Login/login_screen.dart';
 import 'package:loan_management_app/Screens/Signup/signup_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RoundedButton extends StatelessWidget {
   final String text;
@@ -24,7 +25,6 @@ class RoundedButton extends StatelessWidget {
     );
   }
 }
-
 
 Widget loginRoute(BuildContext context) {
   return Center(

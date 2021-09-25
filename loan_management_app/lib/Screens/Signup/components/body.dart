@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loan_management_app/Screens/Signup/components/signup_form.dart';
+import 'package:loan_management_app/components/loading.dart';
 import 'package:loan_management_app/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loan_management_app/components/header_welcome.dart';

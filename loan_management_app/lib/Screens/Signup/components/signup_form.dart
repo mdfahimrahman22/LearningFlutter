@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:loan_management_app/Screens/Login/login_screen.dart';
+import 'package:loan_management_app/Screens/Welcome/welcome_screen.dart';
 import 'package:loan_management_app/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loan_management_app/components/common_components.dart';
+import 'package:loan_management_app/models/user.dart';
 import 'package:loan_management_app/services/auth.dart';
 import 'package:loan_management_app/services/form_validator.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignupForm extends StatefulWidget {
   const SignupForm({Key? key}) : super(key: key);
@@ -13,20 +19,25 @@ class SignupForm extends StatefulWidget {
 }
 
 class _SignupFormState extends State<SignupForm> {
-  // final AuthService _auth = AuthService();
+  final AuthService _auth = AuthService();
   bool passVisible = false;
   bool confirmPassVisible = false;
   bool agreementConfirmed = true;
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _passController = TextEditingController();
+  final _confirmPassController = TextEditingController();
+
   bool error = false;
+  bool isLoading = false;
   String errorMsg = '';
   String name = '';
   String email = '';
   String phone = '';
   String pass = '';
   final _formKey = GlobalKey<FormState>();
-  OutlineInputBorder border = const OutlineInputBorder(
-      borderSide: BorderSide(color: kPrimaryColor),
-      borderRadius: BorderRadius.all(Radius.circular(35)));
+
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
@@ -41,6 +52,10 @@ class _SignupFormState extends State<SignupForm> {
       return kPrimaryColor;
     }
 
+    OutlineInputBorder border = const OutlineInputBorder(
+        borderSide: BorderSide(color: kPrimaryColor),
+        borderRadius: BorderRadius.all(Radius.circular(35)));
+
     return Form(
       key: _formKey,
       child: Container(
@@ -48,69 +63,48 @@ class _SignupFormState extends State<SignupForm> {
         child: Column(
           children: [
             TextFormField(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (val) {
-                return FormValidator().validateName(val);
-              },
-              onChanged: (val) {
-                setState(() {
-                  name = val;
-                });
-              },
-              decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.person_outline_outlined,
-                      color: kPrimaryColor),
-                  errorBorder: border,
-                  focusedErrorBorder: border,
-                  enabledBorder: border,
-                  focusedBorder: border,
-                  hintText: "Name",
-                  hintStyle: const TextStyle(fontSize: 14)),
-            ),
+                controller: _nameController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (val) {
+                  return FormValidator().validateName(val);
+                },
+                onChanged: (val) {
+                  setState(() {
+                    name = val;
+                  });
+                },
+                decoration:
+                    textInputDecoration(Icons.person_outline_outlined, "Name")),
             const SizedBox(height: 20),
             TextFormField(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (val) {
-                return FormValidator().validateEmail(val);
-              },
-              onChanged: (val) {
-                setState(() {
-                  email = val;
-                });
-              },
-              decoration: InputDecoration(
-                  prefixIcon:
-                      const Icon(Icons.email_outlined, color: kPrimaryColor),
-                  errorBorder: border,
-                  focusedErrorBorder: border,
-                  enabledBorder: border,
-                  focusedBorder: border,
-                  hintText: "Email",
-                  hintStyle: const TextStyle(fontSize: 14)),
-            ),
+                controller: _emailController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (val) {
+                  return FormValidator().validateEmail(val);
+                },
+                onChanged: (val) {
+                  setState(() {
+                    email = val;
+                  });
+                },
+                decoration: textInputDecoration(Icons.email_outlined, "Email")),
             const SizedBox(height: 20),
             TextFormField(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (val) {
-                return FormValidator().validatePhone(val);
-              },
-              onChanged: (val) {
-                setState(() {
-                  phone = val;
-                });
-              },
-              decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.phone_iphone_outlined,
-                      color: kPrimaryColor),
-                  errorBorder: border,
-                  focusedErrorBorder: border,
-                  enabledBorder: border,
-                  focusedBorder: border,
-                  hintText: "Mobile Number",
-                  hintStyle: const TextStyle(fontSize: 14)),
-            ),
+                controller: _phoneController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (val) {
+                  return FormValidator().validatePhone(val);
+                },
+                onChanged: (val) {
+                  setState(() {
+                    phone = val;
+                  });
+                },
+                decoration: textInputDecoration(
+                    Icons.phone_iphone_outlined, "Mobile Number")),
             const SizedBox(height: 20),
             TextFormField(
+              controller: _passController,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (val) {
                 return FormValidator().validatePassword(val);
@@ -143,6 +137,7 @@ class _SignupFormState extends State<SignupForm> {
             ),
             const SizedBox(height: 20),
             TextFormField(
+              controller: _confirmPassController,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (val) {
                 return FormValidator().validateConfirmPassword(val, pass);
@@ -180,6 +175,11 @@ class _SignupFormState extends State<SignupForm> {
                     if (val != null) {
                       setState(() {
                         agreementConfirmed = val;
+                        error = !agreementConfirmed;
+                        if (error) {
+                          errorMsg =
+                              "You have to agree with our Privacy Policy and T&C";
+                        }
                       });
                     }
                   },
@@ -207,26 +207,119 @@ class _SignupFormState extends State<SignupForm> {
               ),
             ),
             const SizedBox(height: 20),
-            RoundedButton(
-              text: "Sign Up",
-              press: () async {
-                if (!agreementConfirmed) {
+            Container(
+              alignment: Alignment.center,
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: ElevatedButton(
+                child: isLoading
+                    ? const SpinKitFoldingCube(
+                        color: Colors.white,
+                        size: 25,
+                      )
+                    : const Text("Sign Up"),
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
+                  textStyle: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                  primary: const Color(0xff6C63FF),
+                  shape: const StadiumBorder(),
+                ),
+                onPressed: () async {
+                  if (!agreementConfirmed) {
+                    setState(() {
+                      error = true;
+                      errorMsg =
+                          "You have to agree with our Privacy Policy and T&C";
+                    });
+                    return;
+                  }
+                  if (!_formKey.currentState!.validate()) {
+                    return;
+                  }
+                  if (isLoading) {
+                    Fluttertoast.showToast(
+                        msg: "Please Wait",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: kPrimaryColor,
+                        textColor: Colors.white,
+                        fontSize: 25.0);
+                    return;
+                  }
                   setState(() {
-                    error = true;
-                    errorMsg =
-                        "You have to agree with our Privacy Policy and T&C";
+                    isLoading = true;
                   });
-                  return;
-                }
-                // if (_formKey.currentState!.validate()) {
-                //   dynamic result =
-                //       _auth.registerWithEmailAndPassword(email, pass);
-                // }
-              },
+                  Future<AppUser?> user =
+                      _auth.registerWithEmailAndPassword(email, pass);
+
+                  user.then((value) {
+                    FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(value!.uid)
+                        .set({
+                      "name": name,
+                      "email": email,
+                      "phone": phone,
+                    }, SetOptions(merge: true)).then((value) {
+                      setState(() {
+                        isLoading = false;
+                      });
+                      _nameController.clear();
+                      _emailController.clear();
+                      _phoneController.clear();
+                      _passController.clear();
+                      _confirmPassController.clear();
+
+                      Fluttertoast.showToast(
+                          msg: "Sign Up Successful",
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: kPrimaryColor,
+                          textColor: Colors.white,
+                          fontSize: 25.0);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen()));
+                    });
+                  }).catchError((err) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    print(err);
+                    Fluttertoast.showToast(
+                        msg: 'Error occured, $err',
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: kPrimaryColor,
+                        textColor: Colors.white,
+                        fontSize: 25.0);
+                  });
+                },
+              ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
+}
+
+InputDecoration textInputDecoration(IconData icon, String hint) {
+  OutlineInputBorder border = const OutlineInputBorder(
+      borderSide: BorderSide(color: kPrimaryColor),
+      borderRadius: BorderRadius.all(Radius.circular(35)));
+  return InputDecoration(
+      prefixIcon: Icon(icon, color: kPrimaryColor),
+      errorBorder: border,
+      focusedErrorBorder: border,
+      enabledBorder: border,
+      focusedBorder: border,
+      hintText: hint,
+      hintStyle: const TextStyle(fontSize: 14));
 }

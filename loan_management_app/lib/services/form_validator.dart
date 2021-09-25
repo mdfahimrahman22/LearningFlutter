@@ -6,14 +6,13 @@ class FormValidator {
   FormValidator._();
 
   String? validatePassword(String? value) {
-    String patttern = r'(^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$)';
+    String patttern =
+        r'(^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z!@#$%^&*.,:><|_;\d]{6,}$)';
     RegExp regExp = RegExp(patttern);
     if (value!.isEmpty) {
       return "Password is Required";
-    } else if (value.length < 6) {
-      return "Password must be minimum 6 characters";
     } else if (!regExp.hasMatch(value)) {
-      return "Password at least one uppercase letter, one lowercase letter and one number";
+      return "Password must have at least 6 characters,\nOne uppercase letter, One lowercase letter\n& One number";
     }
     return null;
   }
